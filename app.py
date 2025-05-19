@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, jsonify
 from listen import record_and_transcribe_audio
 from chat import get_response
 from speak import speak
@@ -6,11 +6,7 @@ import asyncio
 import os
 import webbrowser
 
-app = Flask(__name__)
-
-@app.route('/')
-def index():
-    return render_template('index.html')
+# ... other imports stay the same
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
@@ -36,12 +32,11 @@ def process_audio():
     else:
         reply = get_response(text)
 
+    # Generate speech and save to static/output.mp3
     asyncio.run(speak(reply))
-    return "Success"
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    # Return the file path as a JSON response
+    return jsonify({"audio_url": "/static/output.mp3"})
 
 
 

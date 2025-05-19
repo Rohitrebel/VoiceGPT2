@@ -1,34 +1,16 @@
 import os
 import uuid
-import asyncio
-import pygame
 import edge_tts
 
 async def speak(text):
-    # Generate a unique filename
-    filename = "output.mp3"
+    # Save to a consistent file name so the frontend can fetch it
+    filename = "static/output.mp3"  # Ensure 'static/' folder exists and is exposed
 
-    # Generate the speech file
+    # Generate the speech file using Edge TTS
     communicate = edge_tts.Communicate(text, voice="en-IN-PrabhatNeural")
     await communicate.save(filename)
 
-    # Initialize and play using pygame
-    pygame.mixer.init()
-    pygame.mixer.music.load(filename)
-    pygame.mixer.music.play()
-
-    # Wait for playback to finish
-    while pygame.mixer.music.get_busy():
-        await asyncio.sleep(0.1)
-
-    # Stop and clean up pygame mixer
-    pygame.mixer.music.stop()
-    pygame.mixer.quit()
-
-    # Delete the file after speaking
-    try:
-        os.remove(filename)
-    except Exception as e:
-        print(f"⚠️ Could not delete {filename}: {e}")
+    # No playback here — frontend will play 'static/output.mp3'
+    return filename
 
 

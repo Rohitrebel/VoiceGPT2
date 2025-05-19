@@ -6,8 +6,12 @@ import asyncio
 import os
 import webbrowser
 
-# ... other imports stay the same
 app = Flask(__name__)
+
+# ✅ Add this route
+@app.route('/')
+def home():
+    return render_template("index.html")  # make sure templates/index.html exists
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
@@ -15,11 +19,9 @@ def process_audio():
     audio_path = "user_input.webm"
     audio_file.save(audio_path)
 
-    # Convert + Transcribe
     text = record_and_transcribe_audio(audio_path)
     print("User said:", text)
 
-    # Process logic
     if "hi" in text.lower() or "hello" in text.lower():
         reply = "Hi I'm your VoiceGPT AI, how can I help you today?"
     elif "open youtube" in text.lower():
@@ -33,17 +35,9 @@ def process_audio():
     else:
         reply = get_response(text)
 
-    # Generate speech and save to static/output.mp3
     asyncio.run(speak(reply))
-
-    # Return the file path as a JSON response
     return jsonify({"audio_url": "/static/output.mp3"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-
-
-
-
-

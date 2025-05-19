@@ -7,6 +7,7 @@ import os
 import webbrowser
 
 # ... other imports stay the same
+app = Flask(__name__)
 
 @app.route('/process_audio', methods=['POST'])
 def process_audio():
@@ -37,6 +38,10 @@ def process_audio():
 
     # Return the file path as a JSON response
     return jsonify({"audio_url": "/static/output.mp3"})
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
 
 
 

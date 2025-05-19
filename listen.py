@@ -1,17 +1,29 @@
 import speech_recognition as sr
+from pydub import AudioSegment
+import os
 
+def record_and_transcribe_audio(audio_path=None):
+    recognizer = sr.Recognizer()
 
+    # Convert to PCM WAV
+    if audio_path:
+        converted_path = "converted.wav"
+        audio = AudioSegment.from_file(audio_path)
+        audio.export(converted_path, format="wav")
 
-def record_and_transcribe_audio():
-    r = sr.Recognizer()
-    with sr.Microphone() as source:
-        print('Listening...')
-        r.pause_threshold = 1 # Wait for 1 sec before considering the end of a phrase
-        audio = r.listen(source)
-    try: 
-        print('Recognizing Text...')
-        query = r.recognize_google(audio, language = 'en-in')
-    except Exception as e:
-        print("Could you say that again...")
-        return "None"
-    return query
+        with sr.AudioFile(converted_path) as source:
+            audio_data = recognizer.record(source)
+
+        os.remove(converted_path)
+    else:
+        with sr.Microphone() as source:
+            print("Listening...")
+            audio_data = recognizer.listen(source)
+
+    try:
+        text = recognizer.recognize_google(audio_data, language='en-IN')
+    except:
+        text = "None"
+
+    return text
+

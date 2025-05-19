@@ -7,15 +7,16 @@
     <h2>Talk to VoiceGPT</h2>
     <button onclick="startRecording()">🎤 Start</button>
     <button onclick="stopRecording()" disabled id="stopBtn">⏹️ Stop</button>
+    
+    <p id="status">Press "Start" to speak...</p>
+    <audio id="audioPlayer" controls hidden></audio>
 
     <script>
       let mediaRecorder;
       let audioChunks = [];
 
       async function startRecording() {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
 
@@ -28,19 +29,35 @@
           const formData = new FormData();
           formData.append("audio", audioBlob, "user_input.webm");
 
+          document.getElementById("status").innerText = "Processing... ⏳";
+
           try {
             const response = await fetch("/process_audio", {
               method: "POST",
               body: formData,
             });
+
+            if (!response.ok) throw new Error("Failed to process audio.");
+
+            const data = await response.json();
+
+            // Play response audio
+            const audio = document.getElementById("audioPlayer");
+            audio.src = data.audio_url;
+            audio.hidden = false;
+            audio.play();
+
+            document.getElementById("status").innerText = "Response from VoiceGPT 🎧";
           } catch (err) {
             console.error("❌ Error:", err);
             alert("Something went wrong.");
+            document.getElementById("status").innerText = "Error occurred!";
           }
         };
 
         mediaRecorder.start();
         document.getElementById("stopBtn").disabled = false;
+        document.getElementById("status").innerText = "Recording... 🎙️";
       }
 
       function stopRecording() {
@@ -52,3 +69,4 @@
     </script>
   </body>
 </html>
+

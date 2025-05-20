@@ -10,7 +10,6 @@ charset-normalizer==3.4.2
 click==8.1.8
 colorama==0.4.6
 edge-tts==7.0.2
-ffmpeg==1.4
 filelock==3.18.0
 Flask==3.1.1
 frozenlist==1.6.0

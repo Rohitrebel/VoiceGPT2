@@ -1,6 +1,6 @@
-🎙️ VoiceGPT2
+🎙️ VoiceGPT
 
-VoiceGPT2 is a Python-based voice assistant that integrates speech recognition, text-to-speech synthesis, and conversational AI to provide an interactive voice interface. It captures user speech, processes it through a conversational model, and responds audibly, creating a seamless voice-driven experience.
+VoiceGPT is a Python-based voice assistant that integrates speech recognition, text-to-speech synthesis, and conversational AI to provide an interactive voice interface. It captures user speech, processes it through a conversational model, and responds audibly, creating a seamless voice-driven experience.
 
 🚀 Features
 Speech Recognition: Converts spoken words into text using audio input.

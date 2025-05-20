@@ -123,13 +123,12 @@
     <script>
       let mediaRecorder;
       let audioChunks = [];
-      let currentStream = null; // To hold the stream globally
 
       async function startRecording() {
-        const currentStream = await navigator.mediaDevices.getUserMedia({
+        const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
         });
-        mediaRecorder = new MediaRecorder(currentStream);
+        mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
 
         mediaRecorder.ondataavailable = (event) => {
@@ -167,13 +166,6 @@
             alert("Something went wrong.");
             document.getElementById("spinner").style.display = "none";
             document.getElementById("status").innerText = "Error occurred!";
-          }
-        };
-
-        // Stop all tracks to release mic
-        if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-            currentStream = null;
           }
         };
 

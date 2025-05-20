@@ -1,12 +1,12 @@
 import requests
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
-# Load environment variables from .env file
-load_dotenv()
+
 
 # Access OpenAI key
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
 # Optional: raise error if key is missing
 if OPENAI_API_KEY is None:

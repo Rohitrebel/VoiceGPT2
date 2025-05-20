@@ -43,7 +43,8 @@
 
             // Play response audio
             const audio = document.getElementById("audioPlayer");
-            audio.src = data.audio_url;
+            audio.src = data.audio_url + "?t=" + new Date().getTime();
+
             audio.hidden = false;
             audio.play();
 

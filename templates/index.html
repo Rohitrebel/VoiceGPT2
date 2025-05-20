@@ -1,22 +1,133 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>VoiceGPT</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice GPT</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      header {
+        background-color: #2f3e46;
+        color: #ffffff;
+        padding: 1rem 0;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      h2 {
+        margin-bottom: 1.5rem;
+        color: #2f3e46;
+      }
+
+      button {
+        padding: 0.7rem 1.5rem;
+        margin: 0.5rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        background-color: #52796f;
+        color: white;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #354f52;
+      }
+
+      p#status {
+        margin-top: 1.5rem;
+        font-size: 1.1rem;
+        color: #555;
+      }
+
+      audio {
+        margin-top: 1.5rem;
+      }
+
+      footer {
+        background-color: #cad2c5;
+        text-align: center;
+        padding: 0.8rem;
+        font-size: 0.95rem;
+        color: #333;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
   </head>
   <body>
-    <h2>Talk to VoiceGPT</h2>
-    <button onclick="startRecording()">🎤 Start</button>
-    <button onclick="stopRecording()" disabled id="stopBtn">⏹️ Stop</button>
-    
-    <p id="status">Press "Start" to speak...</p>
-    <audio id="audioPlayer" controls hidden></audio>
+    <header>Voice GPT</header>
+
+    <main>
+      <h2>Talk to VoiceGPT</h2>
+      <button onclick="startRecording()">🎤 Start</button>
+      <button onclick="stopRecording()" disabled id="stopBtn">⏹️ Stop</button>
+      <button onclick="clearStatus()" id="clearBtn">🧹 Clear</button>
+
+      <div id="spinner" style="display: none; margin-bottom: 1rem">
+        <div
+          style="
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #52796f;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+          "
+        ></div>
+      </div>
+
+      <p id="status">Press "Start" to speak...</p>
+      <audio id="audioPlayer" controls hidden></audio>
+      <div style="margin-top: 2rem; text-align: center; max-width: 400px">
+        <h4 style="color: #2f3e46">Try saying:</h4>
+        <ul style="list-style-type: none; padding-left: 0; color: #555">
+          <li>“Who is the Prime minister of India?”</li>
+          <li>“Tell me a joke.”</li>
+          <li>“What is AI?”</li>
+          <li>“Translate hello to Spanish.”</li>
+        </ul>
+      </div>
+    </main>
+
+    <footer>Rohit Bhupalam | Age: 21 years</footer>
 
     <script>
       let mediaRecorder;
       let audioChunks = [];
 
       async function startRecording() {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
         mediaRecorder = new MediaRecorder(stream);
         audioChunks = [];
 
@@ -30,6 +141,7 @@
           formData.append("audio", audioBlob, "user_input.webm");
 
           document.getElementById("status").innerText = "Processing... ⏳";
+          document.getElementById("spinner").style.display = "block";
 
           try {
             const response = await fetch("/process_audio", {
@@ -41,23 +153,25 @@
 
             const data = await response.json();
 
-            // Play response audio
             const audio = document.getElementById("audioPlayer");
             audio.src = data.audio_url + "?t=" + new Date().getTime();
-
             audio.hidden = false;
             audio.play();
 
-            document.getElementById("status").innerText = "Response from VoiceGPT 🎧";
+            document.getElementById("spinner").style.display = "none";
+            document.getElementById("status").innerText =
+              "Response from VoiceGPT 🎧";
           } catch (err) {
             console.error("❌ Error:", err);
             alert("Something went wrong.");
+            document.getElementById("spinner").style.display = "none";
             document.getElementById("status").innerText = "Error occurred!";
           }
         };
 
         mediaRecorder.start();
         document.getElementById("stopBtn").disabled = false;
+        document.getElementById("spinner").style.display = "none";
         document.getElementById("status").innerText = "Recording... 🎙️";
       }
 
@@ -67,7 +181,15 @@
           document.getElementById("stopBtn").disabled = true;
         }
       }
+      function clearStatus() {
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("status").innerText =
+          'Press "Start" to speak...';
+        const audio = document.getElementById("audioPlayer");
+        audio.pause();
+        audio.currentTime = 0;
+        audio.hidden = true;
+      }
     </script>
   </body>
 </html>
-

@@ -22,16 +22,13 @@ def process_audio():
     text = record_and_transcribe_audio(audio_path)
     print("User said:", text)
 
-    if "hi" in text.lower() or "hello" in text.lower():
-        reply = "Hi I'm your VoiceGPT AI, how can I help you today?"
-    elif "open youtube" in text.lower():
+
+    if "open youtube" in text.lower():
         webbrowser.open("https://www.youtube.com")
         reply = "Opening YouTube"
     elif "open google" in text.lower():
         webbrowser.open("https://www.google.com")
         reply = "Opening Google"
-    elif text.lower() == "bye":
-        reply = "Bye! Take care"
     else:
         reply = get_response(text)
 

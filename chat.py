@@ -26,7 +26,7 @@ def get_response(user_input):
             {"role": "system", "content": "You are a helpful assistant. Keep your answers short and informative, no longer than 3-4 sentences"},
             {"role": "user", "content": user_input}
         ],
-        "max_tokens": 150 
+        
     }
 
     response = requests.post(url, headers=headers, json=body)

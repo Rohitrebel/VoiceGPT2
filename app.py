@@ -32,7 +32,15 @@ def process_audio():
     else:
         reply = get_response(text)
 
-    asyncio.run(speak(reply))
+    try:
+        asyncio.run(speak(reply))
+    except Exception as e:
+        print("TTS Error:", e)
+        return jsonify({
+            "reply": reply,
+            "error": str(e)
+        })
+        
     return jsonify({"audio_url": "/static/output.mp3"})
 
 if __name__ == "__main__":

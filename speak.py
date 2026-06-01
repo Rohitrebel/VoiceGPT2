@@ -1,16 +1,13 @@
-import os
-import uuid
 import edge_tts
 
 async def speak(text):
-    # Save to a consistent file name so the frontend can fetch it
-    filename = "static/output.mp3"  # Ensure 'static/' folder exists and is exposed
+    print("Generating speech:", text)
 
-    # Generate the speech file using Edge TTS
-    communicate = edge_tts.Communicate(text, voice="en-IN-PrabhatNeural")
-    await communicate.save(filename)
+    communicate = edge_tts.Communicate(
+        text,
+        voice="en-IN-PrabhatNeural"
+    )
 
-    # No playback here — frontend will play 'static/output.mp3'
-    return filename
+    await communicate.save("static/output.mp3")
 
-
+    print("Speech generated successfully")

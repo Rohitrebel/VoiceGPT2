@@ -15,13 +15,11 @@ if OPENAI_API_KEY is None:
 
 def get_response(user_input):
     url = "https://openrouter.ai/api/v1/chat/completions"
-    headers = {
-        "Authorization": "Bearer {}".format(OPENAI_API_KEY),
-        "Content-Type": "application/json"
-    }
+    headers = {"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json", "HTTP-Referer": "http://localhost:5000",
+    "X-Title": "VoiceGPT"}
 
     body = {
-        "model": "mistralai/mistral-7b-instruct",
+        "model": "mistralai/mistral-small-3.2-24b-instruct",
         "messages": [
             {"role": "system", "content": "You are a helpful assistant. Keep your answers short and informative, no longer than 3-4 sentences"},
             {"role": "user", "content": user_input}
@@ -29,5 +27,9 @@ def get_response(user_input):
         
     }
 
-    response = requests.post(url, headers=headers, json=body)
-    return response.json()["choices"][0]["message"]["content"]
+    try:
+        resp = requests.post(url, headers=headers, json=body, timeout=80)
+        resp.raise_for_status()
+        return resp.json()["choices"][0]["message"]["content"]
+    except Exception as e:
+        return f"LLM call failed: {e}"
